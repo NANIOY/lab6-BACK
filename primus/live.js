@@ -4,17 +4,33 @@ module.exports.go = (server) => {
         /* options */
     });
 
-    // check if connection, then console.log
+    const scores = {
+        'Astralis': 0,
+        'NiP': 0,
+        'NAVI': 0,
+    };
+
     primus.on('connection', (spark) => {
-        console.log('connected ༼ つ ◕_◕ ༽つ');
+        console.log('Client connected');
 
-        // check if data, then console.log
-        spark.on('data', (data) => {
-            console.log("data (❁´◡`❁)", data);
+        // emit the current scores to the new client
+        spark.write({ type: 'scores', data: scores });
 
-            // send data back to all clients
-            primus.write(data); // all
-            // spark.write(data); // one
+        spark.on('data', (message) => {
+            // handle different types of messages from the client
+            switch (message.type) {
+                case 'updateScore':
+                    // update the score in the backend
+                    scores[message.data.team] += message.data.score;
+
+                    // Emit the updated scores to all connected clients
+                    primus.write({ type: 'scores', data: scores });
+                    break;
+            }
+        });
+
+        spark.on('end', () => {
+            console.log('Client disconnected');
         });
     });
-}
+};

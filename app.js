@@ -10,6 +10,7 @@ const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const scoresRouter = require('./routes/scores');
 
 var app = express();
 
@@ -38,5 +39,6 @@ db.once('open', () => {
 // routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/scores', scoresRouter);
 
 module.exports = app;

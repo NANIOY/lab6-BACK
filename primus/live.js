@@ -1,7 +1,7 @@
 module.exports.go = (server) => {
     const Primus = require("primus");
     const primus = new Primus(server, {
-        /* options */
+        transformer: "websockets",
     });
 
     // check if connection, then console.log
